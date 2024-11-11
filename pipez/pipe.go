@@ -5,138 +5,134 @@ import (
 )
 
 func Of[A any](a []A) Pipe[A] {
-	return Pipe[A]{
-		in: a,
-	}
+	return a
 }
 
-type Pipe[A any] struct {
-	in []A
-}
+type Pipe[A any] []A
 
 func (p Pipe[A]) Slice() []A {
-	return p.in
+	return p
 }
 
 func (p Pipe[A]) Peek(apply func(a A)) Pipe[A] {
-	slicez.ForEach(p.in, apply)
+	slicez.ForEach(p, apply)
 	return p
 }
 
 func (p Pipe[A]) Concat(slices ...[]A) Pipe[A] {
-	return Of(slicez.Concat(append([][]A{p.in}, slices...)...))
+	return slicez.Concat(append([][]A{p}, slices...)...)
 }
 
 func (p Pipe[A]) Tail() Pipe[A] {
-	return Of(slicez.Tail(p.in))
+	return slicez.Tail(p)
 }
 func (p Pipe[A]) Head() (A, error) {
-	return slicez.Head(p.in)
+	return slicez.Head(p)
 }
 func (p Pipe[A]) Last() (A, error) {
-	return slicez.Last(p.in)
+	return slicez.Last(p)
 }
 func (p Pipe[A]) Initial() Pipe[A] {
-	return Of(slicez.Initial(p.in))
+	return slicez.Initial(p)
 }
 
 func (p Pipe[A]) Reverse() Pipe[A] {
-	return Of(slicez.Reverse(p.in))
+	return slicez.Reverse(p)
 }
 
 func (p Pipe[A]) Nth(i int) A {
-	return slicez.Nth(p.in, i)
+	return slicez.Nth(p, i)
 }
 
 func (p Pipe[A]) Take(i int) Pipe[A] {
-	return Of(slicez.Take(p.in, i))
+	return slicez.Take(p, i)
 }
 func (p Pipe[A]) TakeRight(i int) Pipe[A] {
-	return Of(slicez.TakeRight(p.in, i))
+	return slicez.TakeRight(p, i)
 }
 
 func (p Pipe[A]) TakeWhile(take func(a A) bool) Pipe[A] {
-	return Of(slicez.TakeWhile(p.in, take))
+	return slicez.TakeWhile(p, take)
 }
 func (p Pipe[A]) TakeRightWhile(take func(a A) bool) Pipe[A] {
-	return Of(slicez.TakeRightWhile(p.in, take))
+	return slicez.TakeRightWhile(p, take)
 }
 
 func (p Pipe[A]) Drop(i int) Pipe[A] {
-	return Of(slicez.Drop(p.in, i))
+	return slicez.Drop(p, i)
 }
 
 func (p Pipe[A]) DropRight(i int) Pipe[A] {
-	return Of(slicez.DropRight(p.in, i))
+	return slicez.DropRight(p, i)
 }
 
 func (p Pipe[A]) DropWhile(drop func(a A) bool) Pipe[A] {
-	return Of(slicez.DropWhile(p.in, drop))
+	return slicez.DropWhile(p, drop)
 }
 
 func (p Pipe[A]) DropRightWhile(drop func(a A) bool) Pipe[A] {
-	return Of(slicez.DropRightWhile(p.in, drop))
+	return slicez.DropRightWhile(p, drop)
 }
 
 func (p Pipe[A]) Filter(include func(a A) bool) Pipe[A] {
-	return Of(slicez.Filter(p.in, include))
+	return slicez.Filter(p, include)
 }
 
 func (p Pipe[A]) Reject(exclude func(a A) bool) Pipe[A] {
-	return Of(slicez.Reject(p.in, exclude))
+	return slicez.Reject(p, exclude)
 }
 
 func (p Pipe[A]) Map(f func(a A) A) Pipe[A] {
-	return Of(slicez.Map(p.in, f))
+	return slicez.Map(p, f)
 }
 
 func (p Pipe[A]) Fold(combined func(accumulator A, val A) A, accumulator A) A {
-	return slicez.Fold(p.in, combined, accumulator)
+	return slicez.Fold(p, combined, accumulator)
 }
 
 func (p Pipe[A]) FoldRight(combined func(accumulator A, val A) A, accumulator A) A {
-	return slicez.Fold(p.in, combined, accumulator)
+	return slicez.Fold(p, combined, accumulator)
 }
 
 func (p Pipe[A]) Every(predicate func(a A) bool) bool {
-	return slicez.EveryBy(p.in, predicate)
+	return slicez.EveryBy(p, predicate)
 }
 func (p Pipe[A]) Some(predicate func(a A) bool) bool {
-	return slicez.SomeBy(p.in, predicate)
+	return slicez.SomeBy(p, predicate)
 }
 func (p Pipe[A]) None(predicate func(a A) bool) bool {
-	return slicez.NoneBy(p.in, predicate)
+	return slicez.NoneBy(p, predicate)
 }
 
 func (p Pipe[A]) Partition(predicate func(a A) bool) (satisfied, notSatisfied []A) {
-	return slicez.Partition(p.in, predicate)
+	return slicez.Partition(p, predicate)
 }
 
 func (p Pipe[A]) Sample(n int) Pipe[A] {
-	return Of(slicez.Sample(p.in, n))
+	return slicez.Sample(p, n)
 }
 func (p Pipe[A]) Shuffle() Pipe[A] {
-	return Of(slicez.Shuffle(p.in))
+	return slicez.Shuffle(p)
 }
 func (p Pipe[A]) SortFunc(less func(a, b A) bool) Pipe[A] {
-	return Of(slicez.SortBy(p.in, less))
+	return slicez.SortBy(p, less)
 }
 
 func (p Pipe[A]) Compact(equal func(a, b A) bool) Pipe[A] {
-	return Of(slicez.CompactBy(p.in, equal))
+	return slicez.CompactBy(p, equal)
 }
 
 func (p Pipe[A]) Count() int {
-	return len(p.in)
+	return len(p)
 }
 
 func (p Pipe[A]) Zip(b []A, zipper func(a, b A) A) Pipe[A] {
-	return Of(slicez.Zip(p.in, b, zipper))
+	return slicez.Zip(p, b, zipper)
 }
 func (p Pipe[A]) Unzip(unzipper func(a A) (A, A)) ([]A, []A) {
-	return slicez.Unzip(p.in, unzipper)
+	return slicez.Unzip(p, unzipper)
 }
 
 func (p Pipe[A]) Interleave(a ...[]A) Pipe[A] {
-	return Of(slicez.Interleave[A](append([][]A{p.in}, a...)...))
+	return slicez.Interleave[A](append([][]A{p}, a...)...)
 }
